@@ -32,6 +32,7 @@ volatile unsigned int   clock_millisecond=0;
 #define CLEAR_TIMER0 TCNT0 = 0
 int state = 0;
 int intakeVote = 0;
+int adminMode = 0;
 
 int main(void){
 	DDRB = 0x00;
@@ -62,6 +63,10 @@ int main(void){
     {
 		switch(state){
 			case 0:
+			if(!bit_is_clear(PINB,5)){
+				adminMode = 1;
+				state  = 2;
+			}else{
 				itoa(COUNTA,SHOWA,10);
 				itoa(COUNTB,SHOWB,10);
 				itoa(COUNTC,SHOWC,10);
@@ -79,45 +84,63 @@ int main(void){
 					Lcd4_Write_String("Please cast your vote");
 					START_TIMER0;
 					state = 1;
+					_delay_ms(200);
 				}
+			}
 				break;
 			case 1:
-				if(!bit_is_clear(PINB,4)){
+				if(!bit_is_clear(PINB,5)){
 					intakeVote = 0;
 					STOP_TIMER0;
 					CLEAR_TIMER0;
 					clock_millisecond = 0;
 					Lcd4_Clear();
-					state = 1;
+					state = 2;
+					_delay_ms(200);
+				
 				}else{
-					if(!bit_is_clear(PINB,0)){
-						PORTC |= (1<<0);
-						COUNTA++;
+					if(!bit_is_clear(PINB, 4)){
+						intakeVote = 0;
 						STOP_TIMER0;
-						state = 0;
+						CLEAR_TIMER0;
+						clock_millisecond = 0;
 						Lcd4_Clear();
-					}else if(!bit_is_clear(PINB,1)){
-						PORTC |= (1<<1);
-						COUNTB++;
-						STOP_TIMER0;
 						state = 0;
-						Lcd4_Clear();
-					}else if(!bit_is_clear(PINB,2)){
-						PORTC |= (1<<2);
-						COUNTC++;
-						STOP_TIMER0;
-						state = 0;
-						Lcd4_Clear();
-					}else if(!bit_is_clear(PINB,3)){
-						PORTC |= (1<<3);
-						COUNTD++;
-						STOP_TIMER0;
-						state = 0;
-						Lcd4_Clear();
+						_delay_ms(200);
+						
+						}else{
+						if(!bit_is_clear(PINB,0)){
+							PORTC |= (1<<0);
+							COUNTA++;
+							STOP_TIMER0;
+							state = 0;
+							Lcd4_Clear();
+							}else if(!bit_is_clear(PINB,1)){
+							PORTC |= (1<<1);
+							COUNTB++;
+							STOP_TIMER0;
+							state = 0;
+							Lcd4_Clear();
+							}else if(!bit_is_clear(PINB,2)){
+							PORTC |= (1<<2);
+							COUNTC++;
+							STOP_TIMER0;
+							state = 0;
+							Lcd4_Clear();
+							}else if(!bit_is_clear(PINB,3)){
+							PORTC |= (1<<3);
+							COUNTD++;
+							STOP_TIMER0;
+							state = 0;
+							Lcd4_Clear();
+						}
+						
 					}
 					
 				}
 				break;
+			case 2:
+				Lcd4_Write_String("ADmin Mode");
 		}
 	}
 	
