@@ -72,6 +72,7 @@ int main(void){
 				itoa(COUNTC,SHOWC,10);
 				itoa(COUNTD,SHOWD,10);
 				
+				strcat(SHOWA,"");
 				strcat(SHOWA,SHOWB);
 				strcat(SHOWA,SHOWC);
 				strcat(SHOWA,SHOWD);
@@ -81,7 +82,9 @@ int main(void){
 					intakeVote = 1;
 					Lcd4_Clear();
 					Lcd4_Set_Cursor(1,1);
-					Lcd4_Write_String("Please cast your vote");
+					Lcd4_Write_String("1:BJP 2:AAP");
+					Lcd4_Set_Cursor(2,1);
+					Lcd4_Write_String("3:CPI 4:TMC");
 					START_TIMER0;
 					state = 1;
 					_delay_ms(200);
@@ -89,6 +92,7 @@ int main(void){
 			}
 				break;
 			case 1:
+				
 				if(!bit_is_clear(PINB,5)){
 					intakeVote = 0;
 					STOP_TIMER0;
