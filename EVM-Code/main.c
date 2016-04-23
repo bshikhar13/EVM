@@ -59,6 +59,7 @@ int main(void){
 	
 	Lcd4_Clear();
 	Lcd4_Set_Cursor(1,1);
+	Lcd4_Write_String("ShikharShikharShikharShikharShikharShikharShikharShikharShikhar");
     while (1) 
     {
 		switch(state){
@@ -66,18 +67,11 @@ int main(void){
 			if(!bit_is_clear(PINB,5)){
 				adminMode = 1;
 				state  = 2;
+				Lcd4_Clear();
+				Lcd4_Write_String("Admin Mode");
+				_delay_ms(200);
 			}else{
-				itoa(COUNTA,SHOWA,10);
-				itoa(COUNTB,SHOWB,10);
-				itoa(COUNTC,SHOWC,10);
-				itoa(COUNTD,SHOWD,10);
 				
-				strcat(SHOWA,"");
-				strcat(SHOWA,SHOWB);
-				strcat(SHOWA,SHOWC);
-				strcat(SHOWA,SHOWD);
-				Lcd4_Set_Cursor(1,1);
-				Lcd4_Write_String(SHOWA);
 				if(!bit_is_clear(PINB, 4)){
 					intakeVote = 1;
 					Lcd4_Clear();
@@ -100,6 +94,8 @@ int main(void){
 					clock_millisecond = 0;
 					Lcd4_Clear();
 					state = 2;
+					Lcd4_Clear();
+					Lcd4_Write_String("Admin Mode");
 					_delay_ms(200);
 				
 				}else{
@@ -144,7 +140,38 @@ int main(void){
 				}
 				break;
 			case 2:
-				Lcd4_Write_String("ADmin Mode");
+				if(!bit_is_clear(PINB,5)){
+					intakeVote = 0;
+					adminMode = 0;
+					Lcd4_Clear();
+					state = 0;
+					_delay_ms(200);
+				}else{
+					if(!bit_is_clear(PINB,6)){
+						Lcd4_Clear();
+						COUNTA = 0;
+						COUNTB = 0;
+						COUNTC = 0;
+						COUNTD = 0;
+						Lcd4_Write_String("Resetting");
+					}else if(!bit_is_clear(PINB,7)){
+						Lcd4_Clear();
+						itoa(COUNTA,SHOWA,10);
+						itoa(COUNTB,SHOWB,10);
+						itoa(COUNTC,SHOWC,10);
+						itoa(COUNTD,SHOWD,10);
+						
+						strcat(SHOWA,"");
+						strcat(SHOWA,SHOWB);
+						strcat(SHOWA,SHOWC);
+						strcat(SHOWA,SHOWD);
+						Lcd4_Set_Cursor(1,1);
+						Lcd4_Write_String(SHOWA);
+					}
+				}
+				break;
+				
+				
 		}
 	}
 	
@@ -165,4 +192,3 @@ ISR(TIMER1_COMPA_vect){
 		state = 0;
 	}
 }
-
